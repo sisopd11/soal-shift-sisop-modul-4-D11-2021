@@ -120,6 +120,55 @@ void listFilesRecursively(const char *basePath){
 	closedir(dir);
 }
 
+//No.2 Sub Encrypt Method: Encode & Decode
+void encode2(char *path){
+	chdir(path);
+    	int status;
+    	char path1[1000], path2[1000];
+	DIR *oD;
+    	oD = opendir(".");
+    	struct dirent *dir;
+	struct stat test;
+	
+	if (oD){
+	   while ((dir = readdir(oD)) != NULL){
+	   	if (stat(dir->d_name, &test) < 0);
+		else if (S_ISDIR(test.st_mode)){
+			if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, ".." == 0)
+			    continue;
+			
+			sprintf(path1, "%s%s", path, dir->d_name);
+			   encode2(path1);
+		} else{
+			sprintf(path2,"%s/%s", path, dir->d_name);
+			sprintf(path1,"%s.", path2);
+			
+			pid_t child_id;
+			child_id = fork();
+			
+			if (child_id == 0){
+				pid_t child1 = fork();
+				
+				if (child1 == 0){
+					char* argv[] = {"split", "-b", "1024", "-a", "3", "-d", path2, path1, NULL}
+					execv("/usr/bin/split",argv);
+				} else{
+					while ((wait(&status)) > 0);
+					char *argv[]={"rm", path2, NULL};
+					execv("/bin/rm", argv);
+				}
+			}
+			
+		}
+	   }
+	}
+	return;
+}
+
+void decode2(char *path){
+	
+}
+
 static int xmp_getattr(const char *path, struct stat *stbuf)
 {
 	int res;
