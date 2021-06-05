@@ -138,7 +138,7 @@ void encode2(char *path){
 			    continue;
 			
 			sprintf(path1, "%s%s", path, dir->d_name);
-			   encode2(path1);
+			encode2(path1);
 		} else{
 			sprintf(path2,"%s/%s", path, dir->d_name);
 			sprintf(path1,"%s.", path2);
@@ -166,7 +166,50 @@ void encode2(char *path){
 }
 
 void decode2(char *path){
+	DIR *dp;
+	dp = opendir(dir);
+	char dirpath[1000], fpath[1000], path_file[1000];
+	struct dirent *de;
+	struct stat test;
 	
+	int count = 0;
+	if (dp == NULL)
+		return;
+	while ((de = readdir(dp)) != NULL){
+		if (if (stat(de->d_name, &test) < 0);
+		if (strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0) continue;
+		if (S_ISDIR(check.st_mode)){
+			sprintf(dirpath, "%s/%s", dir, de->d_name);
+			decrypt2(dirpath);
+		} else if (!S_ISDIR(test.st_mode)){
+			sprintf(path_file, "%s/%s", dir, de->d_name);
+			path_file[strlen(path_file) - 4] = '\0';
+			FILE *test = fopen(path_file, "r");
+			
+			if (check != NULL)
+				return;
+			
+			FILE *file = fopen(path_file, "w");
+			sprintf(fpath, "%s.%03d", path_file, count);
+			void *buffer = malloc(1024);
+			
+			while (1){
+				FILE *op = fopen(fpath, "rb");
+				if (op == NULL) 
+					break;
+				
+				size_t readSize = fread(buffer, 1, 1024, op);
+				fwrite(buffer, 1, readSize, file);
+				fclose(op);
+				remove(fpath);
+				count++;
+				sprintf(fpath, "%s.%03d", path_file, count);
+			}
+			free(buffer);
+			fclose(file);
+		}
+	}
+	closedir(dp);
 }
 
 static int xmp_getattr(const char *path, struct stat *stbuf)
