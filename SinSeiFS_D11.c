@@ -13,7 +13,6 @@
 #include<sys/wait.h>
 
 char *dirpath = "/home/dewi/Downloads";
-int id=0;
 
 void encode(char* str){
 	int i=0;
@@ -63,11 +62,10 @@ void cekSubString(const char s[], char sub[],int p, int l){
 	sub[i]='\0';
 }
 
-char ext[1000]="/0";
-
 int cekExt(char* file){
-	id=0;	
-	while(id<strlen(file) && file[id] != '.')id++;
+	char ext[1000]="/0";
+	int id=0;	
+	while(id<strlen(file) && file[id] != '.')id+=1;
 	memset(ext,0,sizeof(ext));
 	strcpy(ext,file+id);
 	return id;
@@ -120,11 +118,6 @@ void listFilesRecursively(const char *basePath){
 		}	
 	}
 	closedir(dir);
-}
-
-
-void encode1(const char *name){
-	listFilesRecursively(name);
 }
 
 static int xmp_getattr(const char *path, struct stat *stbuf)
@@ -185,7 +178,7 @@ static int xmp_mkdir(const char *path, mode_t mode)
 	cekSubString(path,substr,0,6);
 	printf("%s -- %s",path,substr);
 	if(strcpy(substr,"AtoZ_")==0){
-		encode1(path);
+		listFilesRecursively(path);
 	}
  	char fpath[1000];
 	if (!strcmp(path, "/"))
@@ -260,7 +253,7 @@ static int xmp_rename(const char *from, const char *to)
 	cekSubString(from,substr,0,6);
 	printf("%s -- %s",from,substr);
 	if(strcpy(substr,"AtoZ_")==0){
-		encode1(to);
+		listFilesRecusively(to);
 	}
 	sprintf(new_from,"%s%s",dirpath,from);
 	sprintf(new_to,"%s%s",dirpath,to);
