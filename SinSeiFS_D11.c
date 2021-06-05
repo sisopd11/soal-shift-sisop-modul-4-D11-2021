@@ -56,23 +56,26 @@ void cekSubString(const char s[], char sub[],int p, int l){
 	int i=0;
 	while(i<l){
 		sub[i]=s[p+i];
-		i++;
+		i+=1;
 	}
 
-	sub[i]='\0';
+	sub[i] ='\0';
 }
 
 int cekExt(char* file){
 	char ext[1000]="/0";
 	int id=0;	
 	while(id<strlen(file) && file[id] != '.')id+=1;
-	memset(ext,0,sizeof(ext));
-	strcpy(ext,file+id);
+	
+	memset (ext, 0, sizeof(ext));
+	strcpy(ext, file+id);
 	return id;
 }
 
 void listFilesRecursively(const char *basePath){
 	char fpath[1000];
+	int num = 0;
+	
 	if(strcmp(basePath,"/")==0)
 	{
 		basePath = dirpath;
@@ -90,13 +93,15 @@ void listFilesRecursively(const char *basePath){
 
 	while((dp=readdir(dir))!=NULL){
 		if(strcmp(dp->d_name,".")!=0 && strcmp(dp->d_name,"..")!=0){
-			char name[1024], newname[1024], foldername[1024];
-			strcpy(name,dp->d_name);
-			cekExt(name);
-			char namaFile[10000];
-			memset(namaFile,0,strlen(namaFile));
-			strncpy(namaFile,name,id);
-		encode(namaFile);
+			char nama_file[1024], newname[1024], foldername[1024];
+			strcpy(nama_file,dp->d_name);
+			cekExt(nama_file);
+			char new_file_name[10000];
+			memset(new_file_name,0,strlen(new_file_name));
+			strncpy(new_file_name,nama_file,num);
+		
+		encode(new_file_name);
+		
 		sprintf(newname,"/log%s.%s",fpath,newname);
 		memset(foldername,'\0',sizeof(foldername));
 		sprintf(foldername,"%s%s",fpath,newname);
@@ -215,12 +220,12 @@ void decode2(char *path){
 static int xmp_getattr(const char *path, struct stat *stbuf)
 {
 	int res;
-	char fpath[1000];
+	char fpath[10000];
 
-	sprintf(fpath, "%s%s", dirpath, path);
-	// sprintf(fpath, "%s/%s", dirpath, path);
+	sprintf(fpath,"%s%s",dirpath, path);
+	
 	res = lstat(fpath, stbuf);
-	if (res == -1)
+	if (res==(-1))
 		return -errno;
 
 	return 0;
@@ -269,17 +274,16 @@ static int xmp_mkdir(const char *path, mode_t mode)
 	char substr[10];
 	cekSubString(path,substr,0,6);
 	printf("%s -- %s",path,substr);
+	
 	if(strcpy(substr,"AtoZ_")==0){
 		listFilesRecursively(path);
 	}
- 	char fpath[1000];
-	if (!strcmp(path, "/"))
-	{
+ 	char ;
+	if (!strcmp(path, "/")){
 		path = dirpath;
 		sprintf(fpath, "%s", path);
 	}
-	else
-	{
+	else{
 		sprintf(fpath, "%s%s", dirpath, path);
 	}
 	Generator("MKDIR",fpath,1,0,NULL);
@@ -295,13 +299,11 @@ static int xmp_unlink(const char *path)
 {
 	char fpath[1000];
 
-	if (!strcmp(path, "/"))
-	{
+	if (!strcmp(path, "/")){
 		path = dirpath;
 		sprintf(fpath, "%s", path);
 	}
-	else
-	{
+	else{
 		sprintf(fpath, "%s%s", dirpath, path);
 	}
 	Generator("RM",fpath,1,0,NULL);
@@ -339,9 +341,8 @@ static int xmp_rmdir(const char *path)
 static int xmp_rename(const char *from, const char *to)
 {
 	int res;
-	char new_from[1000];
-	char new_to[1000];
-	char substr[10];
+	char new_from[1000], new_to[1000], substr[10];
+
 	cekSubString(from,substr,0,6);
 	printf("%s -- %s",from,substr);
 	if(strcpy(substr,"AtoZ_")==0){
@@ -360,8 +361,7 @@ static int xmp_rename(const char *from, const char *to)
 static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
                     struct fuse_file_info *fi)
 {
-	int fd;
-	int res;
+	int fd, res;
 	char fpath[1000];
 
 	if (!strcmp(path, "/"))
@@ -400,7 +400,7 @@ static int xmp_create(const char* path, mode_t mode, struct fuse_file_info* fi) 
 	{
 		sprintf(fpath, "%s%s", dirpath, path);
 	}
-	Generator("CREATE",fpath,1,0,NULL);
+	Generator("CREATE", fpath, 1, 0, NULL);
 	int res;
 	res = creat(fpath, mode);
 	if(res == -1)
@@ -418,9 +418,7 @@ static struct fuse_operations xmp_oper = {
 	.mkdir          = xmp_mkdir,
 	.unlink         = xmp_unlink,
 	.rename         = xmp_rename,
-	//.link           = xmp_link,
 	.read           = xmp_read,
-	//.write          = xmp_write,
 	.create         = xmp_create,
 };
 
