@@ -78,9 +78,13 @@ Kendala :
 Output :
 
 1. Kondisi Awal
+2. 
 ![output modul 4 1](https://user-images.githubusercontent.com/80894892/121809584-f3f15080-cc8f-11eb-9313-57452d408efe.png)
+
 ![output modul 4 2](https://user-images.githubusercontent.com/80894892/121809648-36b32880-cc90-11eb-8c69-94942bb1c3fe.png)
-2. Setelah di Rename
+
+Setelah di Rename
+
 ![output modul 4 3](https://user-images.githubusercontent.com/80894892/121809708-6f530200-cc90-11eb-8915-76c7e8980ffc.png)
 
 ## Soal No.2
@@ -350,9 +354,11 @@ Format untuk logging ini berisi time (tahun, bulan, hari, jam, menit, detik) dik
 
 fprintf(fl, "%s\n", log) untuk menuliskan format logging WARNING ataupun INFO ke log file.
 
-Kemudian, kita akan memanggil kedua fungsi ini, di setiap fungsi yang ada dalam fuse sesuai dengan perintah. Contohnya adalah pada utilities function misalnya mkdir().
+Kemudian, kita akan memanggil kedua fungsi ini, di setiap fungsi yang ada dalam fuse sesuai dengan perintah. Contohnya adalah pada utility function misalnya mkdir().
 
+Output
+![output modul 4 5](https://user-images.githubusercontent.com/80894892/121810183-606d4f00-cc92-11eb-90fe-20075d4cf208.png)
 
 ## Kendala
-- Gagalkan memasang FUSE.
+- Sempat gagal memasang FUSE.
 - Kurang begitu paham dengan flow FUSE
