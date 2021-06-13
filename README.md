@@ -7,6 +7,74 @@ Modul 4
 |Avind Pramana Azhari|05111940000226|
 
 ## Soal No.1
+a. Jika sebuah direktori dibuat dengan awalan “AtoZ_”, maka direktori tersebut akan menjadi direktori ter-encode.
+
+b. Jika sebuah direktori di-rename dengan awalan “AtoZ_”, maka direktori tersebut akan menjadi direktori ter-encode.
+
+c. Apabila direktori yang terenkripsi di-rename menjadi tidak ter-encode, maka isi direktori tersebut akan terdecode.
+
+d. Setiap pembuatan direktori ter-encode (mkdir atau rename) akan tercatat ke sebuah log. Format : /home/[USER]/Downloads/[Nama Direktori] → /home/[USER]/Downloads/AtoZ_[Nama Direktori]
+
+e. Metode encode pada suatu direktori juga berlaku terhadap direktori yang ada di dalamnya.(rekursif)
+
+Untuk melakukan encode dan decode menggunakan Atbash cipher
+folder akan terencode apabila dibuat atau direname dengan awalan AtoZ dan apabila direktori yang ternkripsi di rename maka isi direktori akan terdecode. Fungsi ini nantinya akan dipanggil disetiap utlity function yang akan digunakan.
+
+```
+
+void encode1(char *str)
+{
+	if (!strcmp(str, ".") || !strcmp(str, "..")) return;
+	int strLength = strlen(str);
+    	for(int i = 0; i < strLength; i++){
+		if(str[i] == '/') 
+            		continue;
+		if(str[i]=='.')
+            		break;
+        
+		if(str[i]>='A'&&str[i]<='Z')
+            		str[i] = 'Z'+'A'-str[i];
+       		if(str[i]>='a'&&str[i]<='z')
+            		str[i] = 'z'+'a'-str[i];
+	}
+}
+
+void decode1(char *str)
+{
+	if (!strcmp(str, ".") || !strcmp(str, "..")) return;
+	int strLength = strlen(str), s=0;
+	for(int i = strLength; i >= 0; i--){
+		if(str[i]=='/')break;
+
+		if(str[i]=='.'){
+			strLength = i;
+			break;
+		}
+	}
+	for(int i = 0; i < strLength; i++){
+		if(str[i]== '/'){
+			s = i+1;
+			break;
+		}
+	}
+    for(int i = s; i < strLength; i++) {
+		if(str[i] =='/'){
+            continue;
+        }
+        if(str[i]>='A'&&str[i]<='Z'){
+            str[i] = 'Z'+'A'-str[i];
+        }
+        if(str[i]>='a'&&str[i]<='z'){
+            str[i] = 'z'+'a'-str[i];
+        }
+    }
+	
+}
+```
+Kendala :
+1. Sempat bingung dengan utility function yang akan digunakan
+
+
 ## Soal No.2
 Fungsi `rename` digunakan untuk memeriksa apakah direktori direname dengan menambahkan RX_ atau menghilangkan RX_ dengan fungsi strstr().
 ```
@@ -200,6 +268,7 @@ Fungsi decrypt dipanggil pada function getattr, rename, rmdir, create, mkdir dan
 
 ## Soal No.3
 ## Soal No.4
+
 ## Kendala
 - Gagalkan memasang FUSE.
 - Kurang begitu paham dengan flow FUSE
