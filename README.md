@@ -18,6 +18,7 @@ d. Setiap pembuatan direktori ter-encode (mkdir atau rename) akan tercatat ke se
 e. Metode encode pada suatu direktori juga berlaku terhadap direktori yang ada di dalamnya.(rekursif)
 
 Untuk melakukan encode dan decode menggunakan Atbash cipher
+
 folder akan terencode apabila dibuat atau direname dengan awalan AtoZ dan apabila direktori yang ternkripsi di rename maka isi direktori akan terdecode. Fungsi ini nantinya akan dipanggil disetiap utlity function yang akan digunakan.
 
 ```
@@ -73,7 +74,14 @@ void decode1(char *str)
 ```
 Kendala :
 1. Sempat bingung dengan utility function yang akan digunakan
+  
+Output :
 
+1. Kondisi Awal
+![output modul 4 1](https://user-images.githubusercontent.com/80894892/121809584-f3f15080-cc8f-11eb-9313-57452d408efe.png)
+![output modul 4 2](https://user-images.githubusercontent.com/80894892/121809648-36b32880-cc90-11eb-8c69-94942bb1c3fe.png)
+2. Setelah di Rename
+![output modul 4 3](https://user-images.githubusercontent.com/80894892/121809708-6f530200-cc90-11eb-8915-76c7e8980ffc.png)
 
 ## Soal No.2
 Fungsi `rename` digunakan untuk memeriksa apakah direktori direname dengan menambahkan RX_ atau menghilangkan RX_ dengan fungsi strstr().
@@ -266,8 +274,84 @@ void decryptRot13(char *path)
 ```
 Fungsi decrypt dipanggil pada function getattr, rename, rmdir, create, mkdir dan lain lain dalam proses sinkronisasi FUSE. Fungsi decrypt dan encryt dilakukan pada function readdir melalui pengecekan string RX_ terdapat di string path di setiap function atau tidak dengan menggunakan fungsi strstr().
 
+Output :
+![output modul 4 4](https://user-images.githubusercontent.com/80894892/121809742-9c071980-cc90-11eb-85ea-e85a7d4a202d.png)
+
 ## Soal No.3
 ## Soal No.4
+a. Log system yang akan terbentuk bernama “SinSeiFS.log” pada direktori home pengguna (/home/[user]/SinSeiFS.log). Log system ini akan menyimpan daftar perintah system call yang telah dijalankan pada filesystem.
+
+b. Karena Sin dan Sei suka kerapian maka log yang dibuat akan dibagi menjadi dua level, yaitu INFO dan WARNING.
+
+c. Untuk log level WARNING, digunakan untuk mencatat syscall rmdir dan unlink.
+
+d. Sisanya, akan dicatat pada level INFO.
+
+e. Format untuk logging yaitu:
+
+
+[Level]::[dd][mm][yyyy]-[HH]:[MM]:[SS]:[CMD]::[DESC :: DESC]
+
+Level : Level logging, dd : 2 digit tanggal, mm : 2 digit bulan, yyyy : 4 digit tahun, HH : 2 digit jam (format 24 Jam),MM : 2 digit menit, SS : 2 digit detik, CMD : System Call yang terpanggil, DESC : informasi dan parameter tambahan
+
+INFO::28052021-10:00:00:CREATE::/test.txt
+
+INFO::28052021-10:01:00:RENAME::/test.txt::/rename.txt
+
+
+```
+void generator1(char *nama, char *path)
+{
+	time_t rawtime;
+	struct tm *timeinfo;
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	char result[1000];
+
+	FILE *file;
+	file = fopen("/home/dewi/SinSeiFS.log", "a");
+
+	if (strcmp(nama, "RMDIR") == 0 || strcmp(nama, "UNLINK") == 0)
+		sprintf(result, "WARNING::%.2d%.2d%d-%.2d:%.2d:%.2d::%s::%s\n", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, nama, path);
+	else
+		sprintf(result, "INFO::%.2d%.2d%d-%.2d:%.2d:%.2d::%s::%s\n", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, nama, path);
+
+	fputs(result, file);
+	fclose(file);
+	return;
+}
+
+void generator2(char *nama, const char *from, const char *to)
+{
+	time_t rawtime;
+	struct tm *timeinfo;
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	char result[1000];
+
+	FILE *file;
+	file = fopen("/home/dewi/SinSeiFS.log", "a");
+
+	if (strcmp(nama, "UNLINK") == 0 || strcmp(nama, "RMDIR") == 0)
+		sprintf(result, "WARNING::%.2d%.2d%d-%.2d:%.2d:%.2d::%s::%s::%s\n", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, nama, from, to);
+	else
+		sprintf(result, "INFO::%.2d%.2d%d-%.2d:%.2d:%.2d::%s::%s::%s\n", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, nama, from, to);
+
+	fputs(result, file);
+	fclose(file);
+	return;
+}
+```
+Untuk membuka log file maka menggunakan FILE *fl = fopen("/home/natih/fs.log", "a") yang nantinya akan berisi perintah system call yang dijalankan. Mode "a" menandakan bahwa file SinSeiFS.log hanya untuk ditulis.
+
+Format untuk logging ini berisi time (tahun, bulan, hari, jam, menit, detik) diketahui menggunakan t_time t.
+
+fprintf(fl, "%s\n", log) untuk menuliskan format logging WARNING ataupun INFO ke log file.
+
+Kemudian, kita akan memanggil kedua fungsi ini, di setiap fungsi yang ada dalam fuse sesuai dengan perintah. Contohnya adalah pada utilities function misalnya mkdir().
+
 
 ## Kendala
 - Gagalkan memasang FUSE.
