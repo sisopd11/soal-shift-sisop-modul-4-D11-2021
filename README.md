@@ -357,6 +357,7 @@ fprintf(fl, "%s\n", log) untuk menuliskan format logging WARNING ataupun INFO ke
 Kemudian, kita akan memanggil kedua fungsi ini, di setiap fungsi yang ada dalam fuse sesuai dengan perintah. Contohnya adalah pada utility function misalnya mkdir().
 
 Output
+
 ![output modul 4 5](https://user-images.githubusercontent.com/80894892/121810183-606d4f00-cc92-11eb-90fe-20075d4cf208.png)
 
 ## Kendala
